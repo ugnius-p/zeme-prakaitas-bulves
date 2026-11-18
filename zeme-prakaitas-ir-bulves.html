@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="lt"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ŽEMĖ, PRAKAITAS IR BULVĖS – Nuo pirmos paskolos iki paskutinės bulvės</title>
+<style>
+:root{--bg:#dde6d0;--p:#f8f9f1;--soil:#3e2d1c;--ink:#232018;--leaf:#3d7a37;--tat:#c59a4e;--rust:#b0432b;--line:#c5ceb5;--bt:#fff;--mut:#667060}
+@media(prefers-color-scheme:dark){:root{--bg:#1a2116;--p:#262e21;--soil:#e3d2ae;--ink:#e8eadf;--leaf:#86c476;--tat:#d6ab5e;--rust:#e8836a;--line:#3b4634;--bt:#12200d;--mut:#9aa690}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;overflow-wrap:anywhere;hyphens:auto}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;color:var(--soil);margin:0}
+h2{font-size:1.05rem;margin-bottom:6px;border-bottom:2px dotted var(--tat);padding-bottom:3px}
+#app{max-width:1150px;margin:0 auto;padding:10px}
+header{background:var(--soil);color:var(--bg);border-radius:10px 10px 0 0;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+header h1{color:var(--bg);font-size:1.25rem;letter-spacing:.03em;line-height:1.2}header small{display:block;font:italic .8rem Georgia,serif;opacity:.85}
+.stripe{height:6px;background:linear-gradient(90deg,#fdb913 33.3%,#006a44 33.3% 66.6%,#c1272d 66.6%);border-radius:0 0 10px 10px}
+.pills{display:flex;gap:4px;flex-wrap:wrap}.pill{padding:2px 10px;border-radius:99px;background:#ffffff22;font-size:.85rem}.pill.on{background:var(--tat);color:#2a1d0c;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:10px;margin-top:10px}
+.card{background:var(--p);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:0}
+.wide{grid-column:1/-1}
+table{width:100%;border-collapse:collapse}td{padding:3px 0;border-bottom:1px solid var(--line);vertical-align:top}td:last-child{text-align:right;font-variant-numeric:tabular-nums;padding-left:8px}
+.pos{color:var(--leaf)}.neg{color:var(--rust)}.mut{color:var(--mut);font-size:.85rem}
+button{font:inherit;background:var(--leaf);color:var(--bt);border:0;border-radius:7px;padding:7px 12px;margin:3px 3px 3px 0;cursor:pointer;font-weight:600;white-space:normal;text-align:left;max-width:100%}
+button.alt{background:var(--tat);color:#2a1d0c}button.bad{background:var(--rust);color:#fff}button.ghost{background:transparent;color:var(--soil);border:1px solid var(--soil)}
+button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--tat)}
+input,select{font:inherit;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--p);color:var(--ink);max-width:100%}input[type=number]{width:110px}
+.ev{border:2px solid var(--tat);background:var(--p);border-radius:10px;padding:12px;margin-top:10px}
+.ev h3{font-size:1.15rem}.note{font-style:italic;color:var(--mut);font-size:.88rem}
+.log{max-height:240px;overflow:auto;font-size:.88rem}.log div{padding:2px 0;border-bottom:1px dotted var(--line)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:50px}.bars i{flex:1;background:var(--tat);border-radius:2px 2px 0 0;min-height:2px}
+.badge{display:inline-block;margin:2px;padding:2px 8px;border-radius:99px;background:var(--leaf);color:var(--bt);font-size:.8rem}.badge.off{background:var(--line);color:var(--mut)}
+#toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--rust);color:#fff;padding:8px 16px;border-radius:8px;display:none;z-index:9;max-width:90%}
+#modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:10;padding:14px}
+#modal div{background:var(--p);padding:18px;border-radius:12px;max-width:420px}
+.center{text-align:center;padding:30px 10px}.hero{font-size:2.2rem;letter-spacing:.2em;margin:6px 0}
+@media(max-width:520px){button{padding:9px 12px}header h1{font-size:1.05rem}}
+</style></head><body>
+<div id="app"></div><div id="toast"></div>
+<div id="modal"><div><p id="mt"></p><button id="my">Taip, daryti</button><button class="ghost" id="mn">Atšaukti</button></div></div>
+<script>
+'use strict';
+/* ===== pagalbinės funkcijos ===== */
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.random()*(b-a),ri=(a,b)=>Math.floor(rnd(a,b+1)),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
+const E=n=>(n<0?'−':'')+Math.abs(Math.round(n)).toLocaleString('lt-LT')+' €';
+const T=n=>(Math.round(n*10)/10).toString().replace('.',','),F2=n=>n.toFixed(2).replace('.',',');
+const KEY='spudTycoonSave1',SEAS=['Pavasaris','Vasara','Ruduo','Žiema'],ICON=['🌱','☀️','🍂','❄️'];
+const SEASIDX=[1.05,1.1,.85,.95],SEED=[280,400],FERT=[0,160,400],YF=[1,1.25,1.4],YS=[1,1.12];
+const STOR=[{n:'Prakiurusi daržinė',cap:80,sp:.09,run:0,up:0},{n:'Šiltinta klėtis',cap:250,sp:.04,run:1,up:500},{n:'Šaldomasis sandėlis',cap:900,sp:.015,run:1.5,up:2500}];
+const PRICES={tractor:18000,harv:45000,stor1:15000,stor2:50000,worker:7000};
+let S=null,pend=null;
+const C=n=>n*S.infl;
+/* ===== būsena ===== */
+function newGame(){return{age:20,year:1,sea:0,cash:8000,debt:30000,policy:3,infl:1,lp:1,land:6,tractor:0,harv:0,workers:0,stor:0,inv:0,
+planted:0,fertT:0,seedT:0,ins:false,weather:1,pest:1,dmg:0,bonus:0,demand:1,pm:0,comp:0,base:180,price:180,prev:180,sold:0,
+fam:false,kids:[],gamb:0,drink:0,car:false,fame:0,pol:false,obs:false,back:false,equipVal:0,acts:{},led:{inc:{},exp:{}},log:[],life:[],ms:{},
+hist:[],seen:{},ev:null,over:null,neg:0,tot:0,peak:0,bestH:0,harvests:0,lastH:'',lostTot:0,sold_t:0,ph:[]}}
+const capT=()=>STOR[S.stor].cap;
+const estBills=()=>S.debt*rate()/100+S.infl*(S.land*80+2800+(S.fam?3000:0)+2500*S.kids.filter(y=>S.year-y<18).length+PRICES.worker*S.workers+1500*S.tractor+3000*S.harv+STOR[S.stor].up+(S.gamb?2500*S.gamb:0)+(S.drink?2500:0)+(S.car?2500:0));
+const cap=()=>8+10*S.tractor+20*S.harv+10*S.workers+3*S.kids.filter(y=>S.year-y>=16).length-(S.back?3:0);
+const landVal=()=>C(4200)*S.lp*(1+S.land/250);
+const assets=()=>S.cash+S.inv*S.price+S.land*landVal()+S.equipVal;
+const netWorth=()=>assets()-S.debt;
+const rate=()=>S.policy+3+(S.debt>assets()*.6?2:0);
+const inc=()=>Object.values(S.led.inc).reduce((a,b)=>a+b,0),exp=()=>Object.values(S.led.exp).reduce((a,b)=>a+b,0);
+function earn(n,c){S.cash+=n;S.led.inc[c]=(S.led.inc[c]||0)+n;S.tot+=n}
+function sp(n,c){S.cash-=n;S.led.exp[c]=(S.led.exp[c]||0)+n}
+function log(t){S.log.unshift(`<b>${S.year} m., ${SEAS[S.sea].toLowerCase()}:</b> ${t}`);if(S.log.length>70)S.log.pop()}
+function life(t){S.life.push(`${S.age} m.: ${t}`);log(t)}
+function flash(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(flash.t);flash.t=setTimeout(()=>e.style.display='none',3200)}
+function ask(t,f){if(typeof AUTO!=='undefined'&&AUTO)return f();pend=f;$('#mt').textContent=t;$('#modal').style.display='flex'}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function reprice(){const sup=cl(1+.5*(S.weather-1),.7,1.3);
+ S.prev=S.price;S.price=Math.max(40,S.base*S.infl*S.demand/sup*SEASIDX[S.sea]*(1+S.pm)*Math.pow(.97,S.comp)*rnd(.95,1.05))}
+const sellPx=q=>S.price*(1-cl((S.sold+q/2)/3000,0,.4));
+/* ===== atsitiktiniai įvykiai (tvarka nekeičiama – dėl išsaugojimų) ===== */
+const P=()=>S.planted>0;
+const EV=[
+{s:[1],w:3,ok:P,t:'🌵 Sausra',d:'Šešias savaites nė lašo lietaus. Tavo laukas dabar techniškai dykuma su ambicijomis.',a:()=>{S.dmg+=.25;S.weather=Math.min(S.weather,.72);reprice();return'Derliaus nuostoliai −25 % (pasėlių draudimas juos sumažina 60 %). 💡 Pasiūlos šokas kelia kainas, bet naudos tik tiems, kurie dar turi ką parduoti.'}},
+{s:[1],w:2,ok:P,t:'🌈 Tobulas oras',d:'Saulė, lietus, vėl saulė – lyg pagal Hidrometeorologijos tarnybos prognozę. Net varnos sužavėtos.',a:()=>{S.weather=1.3;reprice();return'Rekordinis derlius! 💡 Bet tokį patį turi ir visi aplinkiniai, todėl pasiūla auga, o kainos krenta – tai ūkininko paradoksas.'}},
+{s:[1],w:3,ok:P,t:'🦠 Bulvių maras',d:'Lapus dengia rudos dėmės. Airijos istorija apie šią ligą nelabai maloni.',c:[[()=>`Skubus fungicidas (${E(C(40*S.planted))})`,()=>{sp(C(40*S.planted),'Fungicidai');S.dmg+=.04;return'Pagavai laiku. Nuostoliai – tik 4 %.'},()=>C(40*S.planted)],['Tikėtis ir melstis',()=>{S.dmg+=.2;return'Maras sunaikino 20 % derliaus. Malda pasirodė nepelninga.'}]]},
+{s:[1],w:2,ok:P,t:'🧊 Kruša',d:'Iš dangaus krenta ledo gabalai, didesni už žąsies kiaušinį. Vienas jų pataiko į seną „Moskvič“.',a:()=>{S.dmg+=.15;return'Nuostoliai −15 % (draudimas juos sumažina 60 %). 💡 Draudimas perkelia riziką už iš anksto žinomą įmoką.'}},
+{s:[2],w:2,ok:()=>S.inv>10,t:'🤝 Kaimyno Algirdo klaida',d:'Algirdas, dar pusiau miegodamas po vakarykščio, nori nupirkti visas tavo atsargas 20 % brangiau nei rinkoje. Mano, kad perka iš kito ūkio.',c:[['Pasiimti čekį',()=>{const q=S.inv,m=q*S.price*1.2;S.inv=0;earn(m,'Bulvių pardavimas');return`Algirdas sumokėjo ${E(m)} už ${T(q)} t. Bažnyčioje apie tai niekas neužsimena.`}],['Parduoti už sąžiningą kainą',()=>{const q=S.inv,m=q*S.price;S.inv=0;earn(m,'Bulvių pardavimas');S.fame++;return`Sąžiningas sandoris: ${E(m)}. Algirdas visiems pasakoja, kad esi žmogus. Reputacija +1.`}]]},
+{s:[0,1,2,3],w:2,ok:()=>S.tractor>0,t:'🚜 Genda traktorius',d:'Traktorius suknarkia, sudrebėja ir apsimeta negyvu pačiu netinkamiausiu momentu. Kaip ir dera tikram „Belarus“.',c:[[()=>`Tvarkingas remontas (${E(C(3500))})`,()=>{sp(C(3500),'Remontas');return'Sutaisė meistras Dainius iš už trijų kaimų.'},()=>C(3500)],['Izoliacinė juosta ir optimizmas',()=>{if(Math.random()<.55)return'Veikia. Niekas nesupranta kodėl.';S.dmg+=.06;sp(C(6000),'Remontas');return'Visiška avarija. Remontas kainavo '+E(C(6000))+', be to, prarasi laiko.'}]]},
+{s:[1,2],w:2,ok:P,t:'🐀 Kažkas ėda bulves',d:'Lauke atsiranda didžiulės landos. Vietiniai šnabžda apie Bulviaėdį.',c:[[()=>`Samdyti naikintoją (${E(C(1800))})`,()=>{sp(C(1800),'Kenkėjų kontrolė');return'Problema išspręsta. Bulviaėdžio daugiau niekas nematė.'},()=>C(1800)],['Susidraugauti',()=>{if(Math.random()<.5){S.dmg+=.12;return'Jis suėdė 12 % derliaus ir net nepadėkojo.'}earn(C(3000),'Turizmas');S.fame++;return'Jis tampa vietos įžymybe! Turistai sumoka '+E(C(3000))+'.'}]]},
+{s:[0],w:2,ok:()=>S.cash>=C(3000),t:'🧪 Stebuklingos trąšos',d:'Kostiumuotas vyras parduoda „KvantoGro“, žadančias padvigubinti derlių. Priima tik grynuosius ir kalba labai užtikrintai.',c:[[()=>`Pirkti (${E(C(3000))})`,()=>{sp(C(3000),'Trąšos');if(Math.random()<.4){S.bonus+=.3;return'Tikrai veikia! Šių metų derlius +30 %.'}return'Tai buvo dažytos pjuvenos. 💡 Informacijos asimetrija: pardavėjas žino daugiau nei pirkėjas.'},()=>C(3000)],['Mandagiai atsisakyti',()=>'Vyras išnyksta rūke.']]},
+{s:[2,3],w:2,ok:()=>S.inv>10,t:'🕵️ Bulvių vagys',d:'Per naktį dingo 15 % sandėliuotų bulvių. Padangų pėdsakai veda tiesiai į artimiausią kebabinę.',c:[[()=>`Samdyti detektyvą (${E(C(900))})`,()=>{sp(C(900),'Apsauga');if(Math.random()<.6)return'Bulves atgavai, beveik sveikas. Kebabinės savininkas „labai atsiprašo“.';S.inv*=.85;return'Detektyvas nieko neaptiko, bet gerai pavalgė už tavo pinigus. Prarandi 15 % atsargų.'},()=>C(900)],['Susitaikyti su nuostoliu',()=>{S.inv*=.85;return'Prarandi 15 % atsargų.'}]]},
+{s:[2],w:2,ok:P,t:'⭐ Įžymybės pritarimas',d:'Televizijos virėjas tavo bulves pavadina „geriausiomis šalyje, o gal ir galaktikoje“.',a:()=>{S.pm=Math.max(S.pm,.25);S.fame++;reprice();return'Paklausa šoktelėjo: kaina +25 %. 💡 Vartotojų skonio pokyčiai pastumia visą paklausos kreivę.'}},
+{s:[0,3],w:1,t:'🏺 Lobis lauke',d:'Ariant iškyla senas puodas su monetomis. Archeologai jau važiuoja.',a:()=>{const m=ri(1500,4000);earn(m,'Netikėta nauda');return`Radėjo atlygis: ${E(m)}.`}},
+{s:[0],w:1,t:'💣 Karo laikų sprogmuo',d:'Tavo lauke slūgso senas, didelis ir nemalonus siurprizas.',a:()=>{sp(C(2500),'Nenumatytos išlaidos');return'Evakuacija ir išminavimas kainavo '+E(C(2500))+'. Dirva puiki, tik gumbuota.'}},
+{s:[0,1,2,3],w:2,t:'🏦 Palūkanų šuolis',d:'Europos centrinis bankas kovoja su infliacija. Tavo bankininkas šypsosi.',a:()=>{S.policy=Math.min(12,S.policy+1.5);return`Tavo paskolos palūkanų norma dabar ${rate()} %. 💡 Kintamos normos paskola rizikinga, kai palūkanos kyla.`}},
+{s:[0],w:2,t:'🏛️ Tiesioginės išmokos',d:'Nacionalinė mokėjimo agentūra prisimena, kad egzistuoji. Ir kad tau kažkas priklauso.',a:()=>{const m=Math.min(S.land*150*S.infl,9000);earn(m,'Išmokos');return`Gavai išmoką: ${E(m)}.`}},
+{s:[0,1,2,3],w:2,t:'📈 Kainų šuolis',d:'Greitojo maisto tinklai neramiai superka. Bulvės staiga madingos.',a:()=>{S.pm=.35;reprice();return'Kainos +35 %, per kelis sezonus nuslūgs. 💡 Paklausos šuolis esant pastoviai pasiūlai kelia kainas.'}},
+{s:[2,3],w:2,t:'🌍 Pasaulinis bulvių perteklius',d:'Kažkoks žemynas privežė per daug bulvių. Sandėliai plyšta.',a:()=>{S.pm=-.3;reprice();return'Kainos −30 %, atsigaus lėtai. 💡 Perprodukcija mažina kainas; sandėliuoti verta, jei gali sau tai leisti.'}},
+{s:[0,1,2,3],w:2,t:'🎟️ Loterijos laimėjimas',d:'Bilietas, kurį nusipirkai netyčia prie kasos, laimėjo nedidelį prizą.',c:[['Sumažinti paskolą',()=>{const m=ri(2000,4000);const d=Math.min(m,S.debt);S.debt-=d;earn(m-d,'Netikėta nauda');return`${E(d)} keliauja skolai padengti. Atsakingai!`}],['Pirkti daugiau bilietų',()=>{const m=ri(2000,4000);earn(m,'Netikėta nauda');const l=Math.min(S.cash,m+500);sp(l,'Lošimo nuostoliai');if(Math.random()<.4){S.gamb=1;life('Užsikrėtei azartu.');return'Praloši viską, o azartas prilimpa. Prasideda priklausomybė nuo lošimų.'}return'Praloši viską, bet laiku sustoji. Vos vos.'}],['Pasidėti',()=>{earn(ri(2000,4000),'Netikėta nauda');return'Pinigai keliauja į banką.'}]]},
+{s:[0,1,2,3],w:2,ok:()=>S.cash>=C(3500),t:'🪙 „BulvėsKoinas“',d:'Pusbrolis prisiekia, kad bulvėmis paremta kriptovaliuta negali žlugti.',c:[[()=>`Investuoti ${E(C(3000))}`,()=>{sp(C(3000),'Nesėkminga investicija');if(Math.random()<.2){earn(C(9000),'Investicijų pelnas');return'Vertė išauga keturis kartus! Visiems sakai, kad žinojai.'}return'Įkūrėjas išsikraustė į nedidelę salą. 💡 Didelė grąža reiškia didelę riziką.'},()=>C(3000)],['Ačiū, ne',()=>'Pusbrolis su tavimi nebekalba.']]},
+{s:[3],w:1,ok:()=>netWorth()>20000,t:'🕴️ Įtartinas verslininkas iš Kauno',d:'Vyras su akiniais nuo saulės patalpoje (ir juodu „Audi“ tavo kieme) siūlo nupirkti visą ūkį. Sako, kad „reikia tik parašo“.',c:[['Priimti pasiūlymą',()=>{S.sellMult=1.25;endGame('sold');return'Parduota.'}],['Derėtis',()=>{if(Math.random()<.5){S.sellMult=1.5;endGame('sold');return'Jis pasiduoda!'}return'Jis išeina. Netrukus girdi sraigtasparnį.'}],['Atsisakyti',()=>'Ūkis ir orumas lieka pas tave.']]},
+{s:[0,1,2,3],w:1,t:'📜 Paslaptingas palikimas',d:'Senelio brolis iš Amerikos, apie kurį niekada negirdėjai, paliko tau palikimą.',a:()=>{const m=ri(3000,12000);earn(m,'Paveldėjimas');return`Paveldi ${E(m)} ir papūgą, kuri keikiasi latviškai.`}},
+{s:[3],w:2,t:'🧾 VMI patikra',d:'Valstybinė mokesčių inspekcija nori pamatyti tavo „kūrybingą“ buhalteriją.',c:[[()=>`Samdyti buhalterį (${E(C(600))})`,()=>{sp(C(600),'Buhalteris');return Math.random()<.8?'Viskas tvarkoje.':(sp(C(2500),'Baudos'),'Vis tiek gavai '+E(C(2500))+' baudą.')},()=>C(600)],['Tvarkytis pačiam',()=>{if(Math.random()<.4)return'Stebėtinai, viskas gerai.';sp(C(5000),'Baudos');return'Bauda '+E(C(5000))+' ir paaiškinimas, kas yra sąskaita faktūra.'}]]},
+{s:[3],w:2,t:'💸 Infliacijos šuolis',d:'Viskas brangsta, net špagatas maišams užrišti.',a:()=>{S.infl*=1.04;return'Sąnaudos ir žemės vertė išauga 4 %. 💡 Infliacija mažina pinigų vertę, bet kartu ir realią skolos naštą.'}},
+{s:[0,1,2,3],w:2,ok:()=>S.land>=8,t:'🏭 Netoliese atsidaro agroholdingas',d:'„Agro Grupė“ šalia atidaro 5 000 ha bulvių fabriką. Jų traktorius kainuoja daugiau nei tavo namas.',a:()=>{S.comp++;return'Konkurentai visam laikui numuša kainas 3 %. 💡 Konkurencija mažina maržas, o mastų ekonomija duoda pranašumą dideliems.'}},
+{s:[2],w:1,t:'🛑 Kainų lubų nutarimas',d:'Žemės ūkio ministerija apriboja bulvių kainas „vartotojams apsaugoti“.',a:()=>{S.pm=-.2;reprice();return'Kainos −20 %. 💡 Kainų lubos mažina gamintojų paskatas ir pajamas.'}},
+{s:[3],w:3,ok:()=>!S.fam&&S.age>=22,t:'💍 Meilė suranda tave',d:'Kažkam patinki tu, bulvės ir viskas kartu. Nori vestuvių.',c:[[()=>`Didelės vestuvės (${E(C(7000))})`,()=>{sp(C(7000),'Vestuvės');S.fam=true;life('Susituokei (didelės vestuvės).');return'Nuostabi diena, šaltibarščiai liejosi upėmis. Namų ūkio išlaidos nuo šiol didės.'},()=>C(7000)],[()=>`Civilinė metrikacija (${E(C(800))})`,()=>{sp(C(800),'Vestuvės');S.fam=true;life('Susituokei (civilinė metrikacija).');return'Efektyvu. Namų ūkio išlaidos didėja.'},()=>C(800)],['Dar ne',()=>'Renkiesi bulves. Vėl.']]},
+{s:[3],w:2,ok:()=>S.fam&&S.kids.length<4,t:'👶 Kūdikis',d:'Sveikinimai! Atsirado mažas žmogus, kuris jau dabar brangiai kainuoja.',a:()=>{S.kids.push(S.year);life('Gimė tavo vaikas.');return`Vaikas Nr. ${S.kids.length}. Kainuoja apie ${E(C(2500))} per metus iki 18-os; nuo 16 metų jau padeda ūkyje.`}},
+{s:[3],w:2,ok:()=>S.fam&&(S.drink||S.gamb||S.obs||Math.random()<.2),t:'💔 Skyrybų dokumentai',d:'Po žodžių „reikia pasikalbėti“ seka advokatas.',c:[[()=>`Samdyti advokatą (${E(C(2000))})`,()=>{sp(C(2000),'Teisininkai');const l=S.cash*.2;sp(l,'Turto dalybos');S.fam=false;life('Išsiskyrei.');return'Dalybos kainavo dar '+E(l)+'.'},()=>C(2000)],['Greitai susitarti',()=>{const l=S.cash*.4;sp(l,'Turto dalybos');S.fam=false;life('Išsiskyrei.');return'Netenki '+E(l)+'. Išlaikymas vaikams tęsiasi.'}]]},
+{s:[0,1,2,3],w:1,ok:()=>!S.gamb,t:'🎰 Lošimo automatai prie degalinės',d:'Prie kaimo degalinės mirksi lošimo automatai. Pardavėjas mirkteli į tave.',c:[['Tik vienas sukimas',()=>{sp(Math.min(S.cash,C(1500)),'Lošimo nuostoliai');if(Math.random()<.5){S.gamb=1;life('Atsirado potraukis lošti.');return'Pralošei pinigų ir radai įprotį. Nuo šiol kasmet bus nuostolių.'}return'Pralošei šiek tiek ir išėjai.'}],['Praeiti pro šalį',()=>'Automatai nusivylę lieka mirksėti.']]},
+{s:[1,2,3],w:1,ok:()=>!S.drink&&S.year>=2,t:'🍺 Streso gėrimas',d:'Rinka krinta. Bankas skambina. Alinė atvira.',c:[['Dar po vieną',()=>{S.drink=1;life('Tapai alkoholiku.');return'Kainuoja apie '+E(C(2500))+' per metus, o derlius −10 %. Gydymas galimas žiemą.'}],['Eiti pabėgioti',()=>'Jautiesi geriau. Ir šiek tiek prakaituotas.']]},
+{s:[0,1,2,3],w:1,ok:()=>S.cash>8000&&!S.car,t:'🏎️ Sportinis automobilis',d:'Automobilių prekeivis ištiesia tau raudono kabrioleto raktelius. Tavo skolos sunerimusios dūzgia.',c:[[()=>`Pirkti išsimokėtinai (${E(C(22000))})`,()=>{S.debt+=C(22000);S.equipVal+=C(22000)*.5;S.car=true;S.fame++;life('Nusipirkai sportinį automobilį, nors skolos neišmokėtos.');return'Skola +'+E(C(22000))+'; priežiūra '+E(C(2500))+' per metus. Atrodo puikiai.'}],['Likti prie seno pikapo',()=>'Protinga. Pikapas palengvėjusiai atsidūsta.']]},
+{s:[2,3],w:1,t:'📹 Virusinis vaizdo įrašas',d:'Vaizdo įrašas, kuriame glėbesčiuoji bulvę, išplinta socialiniuose tinkluose.',a:()=>{S.fame++;earn(C(1500),'Rėmimas');S.pm=Math.max(S.pm,.1);return`Rėmėjai sumoka ${E(C(1500))}, o paklausa šiek tiek išauga.`}},
+{s:[0,1,2,3],w:1,ok:()=>S.age>=24&&!S.pol,t:'🗳️ Vietos politika',d:'Seniūnijai reikia kandidato, kuris išmano dirvožemį.',c:[[()=>`Kandidatuoti į tarybą (${E(C(2000))})`,()=>{sp(C(2000),'Rinkimų kampanija');if(Math.random()<.5){S.pol=true;life('Išrinktas į savivaldybės tarybą.');return'Išrinktas! Palankios paslaugos duos apie '+E(C(1200))+' per metus.'}return'Pralaimėjai Jonui Kazlauskui, kuris pažadėjo naują autobusų stotelę.'},()=>C(2000)],['Nesidomėti',()=>'Politika tęsiasi be tavęs.']]},
+{s:[0,1],w:1,ok:()=>S.year>=2&&!S.obs,t:'🥔 Bulvių manija',d:'Miegi tvarte. Visiems augalams davei vardus.',c:[['Panirti iki ausų',()=>{S.obs=true;life('Apsėdo bulvininkystė.');return'Derlius visam laikui +4 %. Skyrybų rizika didėja.'}],['Išvykti atostogų',()=>{sp(C(1500),'Atostogos');return'Pailsi. Palangos paplūdimyje išverki.'}]]},
+{s:[0,1,2,3],w:1,ok:()=>S.age>=28&&!S.back,t:'🦴 Nugaros trauma',d:'Tavo nugara pateikia oficialų skundą.',c:[[()=>`Fizioterapija (${E(C(3000))})`,()=>{sp(C(3000),'Medicina');return'Pasveikai. Beveik.'},()=>C(3000)],['Praeis savaime',()=>{S.back=true;life('Nugaros skausmai sumažino darbo pajėgumą.');return'Tavo darbo pajėgumas visam laikui sumažėja 3 ha.'}]]},
+{s:[0,1,2,3],w:1,t:'📞 Skambina mama',d:'Mamai reikia pinigų stogui. Dar ji primena, kad apie universitetą jau seniai sakė: „Aš gi sakiau“.',c:[[()=>`Padėti (${E(C(1000))})`,()=>{sp(C(1000),'Šeimos pagalba');return'Ji verkia. Tu verki. Stogas atlaiko.'},()=>C(1000)],['Mandagiai atsisakyti',()=>'Dar kartą išgirsti „aš gi sakiau“.']]},
+{s:[0,1,2,3],w:1,ok:()=>S.cash>=C(5500),t:'💡 Kurso draugo startuolis',d:'Senas kurso draugas siūlo „bulvių pristatymą per programėlę“.',c:[[()=>`Investuoti ${E(C(5000))}`,()=>{sp(C(5000),'Nesėkminga investicija');if(Math.random()<.35){earn(C(15000),'Investicijų pelnas');return'Pavyksta! Pinigai patrigubėja.'}return'Jie persiorientuoja į NFT maišus ir dingsta.'},()=>C(5000)],['Atsisakyti',()=>'Jis sako, kad dar gailėsies.']]},
+{s:[2,3],w:1,t:'🌿 Ekologiškų produktų bumas',d:'Maisto tinklaraštininkė skelbia, kad visos bulvės turėjo būti „išaugintos su jausmu“.',a:()=>{S.pm=Math.max(S.pm,.15);reprice();return'Paklausa +15 %. 💡 Madų pokyčiai keičia paklausą.'}},
+/* nauji įvykiai (pridėti gale) */
+{s:[0,1,2],w:2,t:'🧐 Žemės ūkio inspektorius',d:'Į kiemą įvažiuoja baltas pikapas su užrašu „Valstybinė augalininkystės tarnyba“. Ponas su segtuvu nori pamatyti pesticidų žurnalą. Tu turi... žurnalą. Maždaug.',c:[[()=>`Greitai susitvarkyti dokumentus (${E(C(500))})`,()=>{sp(C(500),'Biurokratija');return'Inspektorius linkteli ir išvažiuoja. Segtuvas liko nepaliestas.'},()=>C(500)],['Aiškinti, kad žurnalą suėdė ožka',()=>{if(Math.random()<.5)return'Jis nusijuokia ir leidžia išsisukti. Šį kartą.';sp(C(1200),'Baudos');return'Bauda '+E(C(1200))+'. Ožka nekalta, bet tai neįrodyta.'}]]},
+{s:[2],w:2,ok:P,t:'🏆 Žemaitijos bulvių čempionatas',d:'Šilalės rajone, nedideliame kaime, rengiamas metinis bulvių čempionatas. Prizas – diplomas, 2 000 € ir amžina šlovė.',c:[[()=>`Dalyvauti (${E(C(400))})`,()=>{sp(C(400),'Dalyvio mokestis');if(Math.random()<.35){earn(C(2000),'Prizai');S.fame++;return'Laimėjai! Žiuri pripažino tavo bulves „padoriomis“, o tai Žemaitijoje aukščiausias įvertinimas.'}return'Pirmą vietą pasiėmė močiutė Ona Petrauskienė su savo veislėmis. Tavo bulves žiuri pavadino „įdomiomis“.'},()=>C(400)],['Likti namie',()=>'Namie ramu. Ir niekas nepaklaus, kodėl tavo bulvės tokios mažos.']]},
+{s:[0,1,2,3],w:1,ok:()=>S.cash>=C(500),t:'🥔 Kaimynas Stasys žino geriau',d:'Kaimynas Stasys prie tvoros jau trečią valandą įrodinėja, kad jo bulvės geresnės už visų, o tavosios – „kaip batų guma“. Siūlo lažybas už 500 €.',c:[[()=>`Lažintis (${E(C(500))})`,()=>{sp(C(500),'Lažybos');if(Math.random()<.5){earn(C(1000),'Lažybų laimėjimas');return'Tavo bulvės laimi akląjį ragavimą. Stasys išeina įsižeidęs.'}return'Stasys laimi. Teko pripažinti, kad jo bulvės... tikrai skanios. Tik niekam nesakyk.'},()=>C(500)],['Tiesiog nusišypsoti',()=>'Stasys laimėjo ginčą, bet ne lažybas.']]}
+];
+function drawEvent(){if(Math.random()>.8)return;
+ const pool=EV.map((e,i)=>({e,i})).filter(({e,i})=>e.s.includes(S.sea)&&(!e.ok||e.ok())&&!(S.seen[i]>=S.year-2));
+ const tw=pool.reduce((a,{e})=>a+e.w,0);if(!tw)return;let r=Math.random()*tw,pick=pool[0];
+ for(const x of pool){r-=x.e.w;if(r<=0){pick=x;break}}
+ S.seen[pick.i]=S.year;S.ev={i:pick.i,res:null};
+ if(pick.e.a){S.ev.res=pick.e.a();log(pick.e.t+': '+S.ev.res)}}
+function chooseEv(k){if(!S.ev||S.ev.res!==null)return;const c=EV[S.ev.i].c[k],cost=typeof c[2]==='function'?c[2]():c[2]||0;
+ if(S.cash<cost)return flash('Šiam pasirinkimui pinigų neužtenka.');S.ev.res=c[1]()||'';if(!S.over)log(EV[S.ev.i].t+': '+S.ev.res);save();render()}
+function endEv(){S.ev=null;save();render()}
+/* ===== sezonų eiga ===== */
+function next(){if(S.ev||S.over)return;
+ if(S.sea===0&&!S.planted)return ask('Šiemet palikti laukus dirvonuoti? Iš ūkininkavimo nieko neuždirbsi.',go);
+ if(S.sea===3)return ask(`Pradėti ${S.year+1}-uosius metus? Tau bus ${S.age+1} m.`,go);go()}
+function go(){if(S.sea===3){const nw=netWorth();
+  if(inc()-exp()>0&&!S.ms.profit){S.ms.profit=1;life('Pirmieji pelningi metai!')}
+  if(nw<0){S.neg++;log('Bankas atsiunčia labai mandagų ir labai bauginantį laišką.')}else S.neg=0;
+  if(S.neg>=2||nw<-40000)return endGame('bankrupt');
+  S.year++;S.age++;S.sea=0;S.planted=0;S.fertT=0;S.ins=false;S.dmg=0;S.bonus=0;S.acts={};S.led={inc:{},exp:{}};
+  if(S.age>=60)return endGame('retired')}else S.sea++;
+ enter();save();render()}
+function enter(){const s=S.sea;S.sold=0;
+ const st=STOR[S.stor];if(!(S.year===1&&s===0)){const lost=S.inv*st.sp;if(lost>.5){S.inv-=lost;S.lostTot+=lost;log(`${T(lost)} t bulvių supuvo (${st.n.toLowerCase()}).`)}sp(S.inv*st.run*S.infl,'Sandėliavimo išlaidos')}
+ S.pm*=.6;if(Math.abs(S.pm)<.02)S.pm=0;
+ if(s===0)S.demand=cl(S.demand+(1-S.demand)*.4+rnd(-.08,.08),.7,1.4);
+ if(s===1){S.weather=cl(rnd(.55,1.3)*.5+rnd(.75,1.25)*.5,.6,1.3);S.pest=rnd(.3,1.3)}
+ reprice();
+ if(s===2){harvest();S.hist.push({y:S.year,p:S.price});if(S.hist.length>12)S.hist.shift()}
+ if(s===3)winter();
+ if(!S.over)drawEvent()}
+function harvest(){const p=S.planted;if(!p){S.lastH='Nieko nepasėjai, todėl nebuvo ką nuimti.';return}
+ const cp=cap(),lab=p>cp?.4+.6*cp/p:1,myW=S.weather<1&&S.acts.irr?S.weather+(1-S.weather)*.6:S.weather;
+ const pestL=.15*S.pest*(S.acts.pest?.2:1),dmg=cl(S.dmg*(S.ins?.4:1),0,.9);
+ const eq=1+(S.tractor?.06:0)+(S.harv?.04:0)+(S.acts.top?.05:0)+(S.obs?.04:0)+S.bonus;
+ const per=12.5*YF[S.fertT]*YS[S.seedT]*myW*eq*(S.drink?.9:1)*lab*(1-pestL)*(1-dmg),tot=Math.max(0,per*p);
+ S.harvests++;S.bestH=Math.max(S.bestH,tot);if(!S.ms.harvest){S.ms.harvest=1;life('Pirmas sėkmingas derlius!')}
+ let ex=0;S.inv+=tot;if(S.inv>capT()){ex=S.inv-capT();S.inv=capT();earn(ex*S.price*.8,'Bulvių pardavimas (pertekliaus išpardavimas)')}
+ S.lastH=`Nuimta <b>${T(tot)} t</b> (${T(per)} t/ha). Oro koeficientas ×${F2(S.weather)}, kenkėjų nuostoliai ${Math.round(pestL*100)} %, nelaimių nuostoliai ${Math.round(dmg*100)} %`+(lab<1?`, darbo jėgos trūkumas ×${F2(lab)}`:'')+(ex>0?`. Sandėlis pilnas: ${T(ex)} t išparduota skubiai už 80 % rinkos kainos.`:'.')}
+function winter(){const r=rate();
+ sp(S.debt*r/100,'Paskolos palūkanos');sp(S.land*80*S.infl,'Žemės mokestis ir priežiūra');
+ if(S.tractor)sp(1500*S.infl*S.tractor,'Technikos priežiūra');if(S.harv)sp(3000*S.infl*S.harv,'Technikos priežiūra');
+ if(S.workers)sp(PRICES.worker*S.infl*S.workers,'Atlyginimai');sp(STOR[S.stor].up*S.infl,'Sandėlio priežiūra');
+ sp(2800*S.infl,'Pragyvenimas');if(S.fam)sp(3000*S.infl,'Šeima');
+ const kids=S.kids.filter(y=>S.year-y<18).length;if(kids)sp(2500*S.infl*kids,'Vaikai');
+ if(S.gamb){sp(ri(1000,3500)*S.gamb*S.infl,'Lošimo nuostoliai');if(S.gamb<3&&Math.random()<.3)S.gamb++}
+ if(S.drink)sp(2500*S.infl,'Alkoholis');if(S.car)sp(2500*S.infl,'Automobilio išlaidos');
+ if(S.pol)earn(1200*S.infl,'Politinės paslaugos');
+ const dep=S.equipVal*.12;S.equipVal-=dep;
+ if(S.cash<0){const sh=-S.cash;S.cash=0;S.debt+=sh*1.03;log(`Overdraftas ${E(sh)} paverstas skubia paskola (+3 % mokestis). Palūkanos kaupiasi.`)}
+ const ir=rnd(.02,.05);S.infl*=1+ir;S.policy=cl(Math.round((S.policy+(ir*100+1.5-S.policy)*.4+rnd(-.5,.5))*2)/2,1,12);
+ S.lp=cl(S.lp*(1+rnd(-.06,.08)),.7,1.5);S.base*=1+rnd(-.01,.01);
+ S.ph.push({y:S.year,nw:netWorth()});log(`Žiemos apžvalga: pajamos ${E(inc())}, išlaidos ${E(exp())} (+ ${E(dep)} nusidėvėjimas). Grynoji vertė ${E(netWorth())}. Infliacija ${F2(ir*100)} %, paskolos norma dabar ${rate()} %.`)}
+function endGame(k){const nw=netWorth()*(k==='sold'?(S.sellMult||1.25):1);S.over={k,nw};S.peak=Math.max(S.peak,nw);save();render()}
+/* ===== žaidėjo veiksmai ===== */
+function plant(){const a=Math.floor(+$('#ac').value),sd=+$('#sd').value,f=+$('#fe').value,ins=$('#in').checked;doPlant(a,sd,f,ins)}
+function doPlant(a,sd,f,ins){if(S.sea!==0||S.planted||S.ev)return;
+ if(!(a>=1&&a<=S.land))return flash(`Pasirink nuo 1 iki ${S.land} ha.`);
+ const cs=a*SEED[sd]*S.infl,cf=a*FERT[f]*S.infl,cu=a*40*S.infl,ci=ins?a*35*S.infl:0,c=cs+cf+cu+ci;
+ if(c>S.cash)return flash(`Trūksta ${E(c-S.cash)}. Pasiskolink arba sėk mažiau.`);
+ ask(`Sėti ${a} ha už ${E(c)}?`,()=>{if(S.planted)return;sp(cs,'Sėklos');if(cf)sp(cf,'Trąšos');sp(cu,'Kuras ir darbas');if(ci)sp(ci,'Pasėlių draudimas');
+  S.planted=a;S.seedT=sd;S.fertT=f;S.ins=ins;log(`Pasėta ${a} ha. Kaina ${E(c)}.`);save();render()})}
+function act(k){if(S.ev||S.sea!==1||S.acts[k]||!S.planted)return;const cost=S.planted*S.infl*{pest:90,irr:80,top:100}[k];
+ if(cost>S.cash)return flash('Pinigų neužtenka.');ask(`Išleisti ${E(cost)}?`,()=>{if(S.acts[k])return;sp(cost,{pest:'Pesticidai',irr:'Laistymas',top:'Papildomos trąšos'}[k]);S.acts[k]=1;save();render()})}
+function sell(q){q=Math.min(S.inv,Math.floor(q));if(!(q>0))return flash('Neturi ką parduoti.');const px=sellPx(q),m=q*px;
+ ask(`Parduoti ${q} t po ${E(px)}/t už ${E(m)}?`,()=>{q=Math.min(q,S.inv);const px2=sellPx(q);earn(q*px2,'Bulvių pardavimas');S.inv-=q;S.sold+=q;log(`Parduota ${q} t po ${E(px2)}/t.`);save();render()})}
+function sellInput(){sell(+$('#qt').value)}
+function exportDeal(){if(S.acts.exp||S.land<40)return;const q=Math.min(S.inv,300);if(q<1)return flash('Neturi atsargų eksportui.');
+ ask(`Eksportuoti ${T(q)} t už +20 % kainą atėmus pervežimą?`,()=>{const m=q*(S.price*1.2-12*S.infl);earn(m,'Eksporto pardavimai');S.inv-=q;S.acts.exp=1;log(`Eksporto sutartis: ${E(m)}.`);save();render()})}
+function buy(k){let c,f,n;
+ if(k==='land'){const q=Math.max(1,Math.floor(+$('#lq').value||1));c=q*landVal();f=()=>{S.land+=q;if(S.land>6&&!S.ms.land){S.ms.land=1;life('Nusipirkai papildomos žemės.')}};return pay(c,`Pirkti ${q} ha žemės`,f)}
+ if(k==='tractor'){if(S.tractor>=3)return flash('Trijų traktorių pakanka.');n='Pirkti traktorių';c=C(PRICES.tractor);f=()=>{S.tractor++;S.equipVal+=c;if(!S.ms.tractor){S.ms.tractor=1;life('Nusipirkai pirmąjį traktorių.')}}}
+ if(k==='harv'){if(!S.tractor)return flash('Pirma nusipirk traktorių.');if(S.harv>=2)return flash('Daugiau kombainų nereikia.');n='Pirkti kombainą';c=C(PRICES.harv);f=()=>{S.harv++;S.equipVal+=c}}
+ if(k==='stor'){if(S.stor>=2)return;n='Gerinti sandėlį';c=C(PRICES['stor'+(S.stor+1)]);f=()=>{S.stor++;S.equipVal+=c}}
+ if(k==='worker'){n='Samdyti darbuotoją';c=0;f=()=>{S.workers++;if(!S.ms.worker){S.ms.worker=1;life('Pasamdei pirmą darbuotoją.')}}}
+ pay(c,n,f)}
+function pay(c,n,f){if(c>S.cash)return flash(`Trūksta dar ${E(c-S.cash)}.`);ask(`${n}${c?' už '+E(c):''}?`,()=>{if(c>S.cash)return;S.cash-=c;f();save();render()})}
+function fire(){if(S.workers>0)ask('Atleisti vieną darbuotoją?',()=>{S.workers--;save();render()})}
+function sellLand(){const n=Math.max(1,Math.floor(+$('#lq').value||1));if(n>S.land-S.planted||S.land-n<1)return flash('Negali parduoti apsėtos žemės ar paskutinio hektaro.');
+ const m=n*landVal()*.85;ask(`Parduoti ${n} ha už ${E(m)} (15 % sandorio kaštų)?`,()=>{S.land-=n;S.cash+=m;save();render()})}
+function borrow(){const n=Math.floor(+$('#ln').value);const lim=Math.max(0,assets()*.65-S.debt);if(!(n>0))return;if(n>lim)return flash(`Bankas paskolins daugiausiai ${E(lim)} (65 % turto).`);
+ ask(`Skolintis ${E(n)} už ${rate()} %? Palūkanos kainuos ${E(n*rate()/100)} per metus.`,()=>{S.debt+=n;S.cash+=n;save();render()})}
+function repay(all){let n=all?Math.min(S.cash,S.debt):Math.floor(+$('#ln').value);n=Math.min(n,S.debt);if(!(n>0))return flash('Nėra ką grąžinti.');if(n>S.cash)return flash('Pinigų neužtenka.');
+ ask(`Grąžinti ${E(n)}?`,()=>{S.debt-=n;S.cash-=n;if(S.debt<1&&!S.ms.loan){S.ms.loan=1;life('Visiškai grąžinai banko paskolą!')}save();render()})}
+function rehab(k){const c=C(2500);if(c>S.cash)return flash('Pinigų neužtenka.');ask(`Gydymas už ${E(c)} (sėkmės tikimybė apie 60 %)?`,()=>{sp(c,'Gydymas');if(Math.random()<.6){S[k]=0;life(k==='gamb'?'Įveikei potraukį lošti.':'Nustojai gerti.');log('Gydymas pavyko!')}else log('Šį kartą gydymas nepadėjo.');save();render()})}
+function retire(){ask('Išeiti į pensiją ir pamatyti galutinius rezultatus?',()=>endGame('retired'))}
+function newG(){ask('Pradėti naują žaidimą? Dabartinė pažanga bus perrašyta.',()=>{S=newGame();log('Metei universitetą, pasiėmei paskolą ir nusipirkai žemės sklypelį Pakalniškių kaime. Mama jau kreipėsi į kunigą.');reprice();S.seen={};save();render()})}
+function reset(){ask('Ištrinti išsaugotą žaidimą ir grįžti į meniu?',()=>{try{localStorage.removeItem(KEY)}catch(e){}S=null;render()})}
+function cont(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.year){S=s;render();return}}catch(e){}flash('Išsaugoto žaidimo nerasta.')}
+/* ===== atvaizdavimas ===== */
+const row=(k,v,c)=>`<tr><td>${k}</td><td class="${c||''}">${v}</td></tr>`;
+const btn=(t,f,c,d)=>`<button class="${c||''}" ${d?'disabled':''} onclick="${f}">${t}</button>`;
+const TITLE=`<h1>ŽEMĖ, PRAKAITAS IR BULVĖS<small>„Nuo pirmos paskolos iki paskutinės bulvės.“</small></h1>`;
+function milestones(){const nw=netWorth();const m=[['harvest','Pirmas derlius'],['profit','Pelningi metai'],['loan','Paskola grąžinta'],['tractor','Pirmasis traktorius'],['land','Daugiau žemės'],['worker','Pirmas darbuotojas']];
+ if(nw>=1e6)S.ms.mil=1;if(S.land>=60)S.ms.reg=1;if(nw>=1e7)S.ms.emp=1;S.peak=Math.max(S.peak,nw);
+ return m.concat([['mil','1 mln. € grynosios vertės'],['reg','Didžiausias rajone (60+ ha)'],['emp','Bulvių imperija (10 mln. €)']]).map(([k,n])=>`<span class="badge ${S.ms[k]?'':'off'}">${S.ms[k]?'🏆 ':''}${n}</span>`).join('')}
+function sellPanel(){if(S.inv<.5)return'<p class="mut">Sandėlyje bulvių nėra.</p>';
+ return`<p>Sandėlyje: <b>${T(S.inv)} t</b> (talpa ${capT()} t). Kaina ${E(S.price)}/t; parduodant daug tonų per sezoną kaina krenta.</p>
+ <input type="number" id="qt" min="1" value="${Math.floor(S.inv)}"> t ${btn('Parduoti','sellInput()')} ${btn('Pusę','sell(S.inv/2)','alt')} ${btn('Viską','sell(S.inv)','alt')}
+ ${S.land>=40?btn('Eksporto sutartis (300 t)','exportDeal()','alt',S.acts.exp):''}`}
+function actions(){const s=S.sea;let h='';
+ if(s===0){h+=S.planted?`<p>✅ Pasėta <b>${S.planted}</b> ha.</p>`:`<h2>🌱 Sėja</h2><p class="mut">Pajėgumas: ${cap()} ha be derliaus nuobaudos.</p><p class="note">⚠️ Žiemos sąskaitos bus apie ${E(estBills())}. Pasilik tiek pinigų, kitaip overdraftas virs brangia skola.</p>
+ <p>Plotas, ha <input type="number" id="ac" min="1" max="${S.land}" value="${Math.min(S.land,cap())}"></p>
+ <p>Sėklos <select id="sd"><option value="0">Paprastos ${E(C(280))}/ha</option><option value="1">Sertifikuotos ${E(C(400))}/ha (+12 % derliaus)</option></select></p>
+ <p>Trąšos <select id="fe"><option value="0">Jokių</option><option value="1" selected>Standartinės ${E(C(160))}/ha (+25 %)</option><option value="2">Aukščiausios kokybės ${E(C(400))}/ha (+40 %)</option></select></p>
+ <p><label><input type="checkbox" id="in"> Pasėlių draudimas ${E(C(35))}/ha</label></p>${btn('Sėti','plant()')}`}
+ if(s===1){h+=`<h2>☀️ Auginimo sezonas</h2><p>Oras: <b>${S.weather<.85?'sausas ir žiaurus':S.weather>1.15?'nuostabus':'vidutinis'}</b> (×${F2(S.weather)}). Kenkėjų spaudimas: <b>${S.pest<.6?'mažas':S.pest<1?'vidutinis':'didelis'}</b>.</p>`;
+  if(S.planted){const n=S.planted*S.infl;h+=btn(`Purkšti pesticidus ${E(n*90)}`,"act('pest')",'',S.acts.pest)+btn(`Laistyti ${E(n*80)}`,"act('irr')",'',S.acts.irr)+btn(`Papildomos trąšos ${E(n*100)}`,"act('top')",'',S.acts.top)+'<p class="note">Laistymas padeda sausros metu; pesticidai sumažina kenkėjų žalą 80 %; papildomos trąšos duoda +5 % derliaus.</p>'}else h+='<p>Nieko nepasėta.</p>'}
+ if(s===2)h+=`<h2>🍂 Derliaus nuėmimas</h2><p>${S.lastH}</p><p class="note">💡 Rudenį kainos žemiausios: visi parduoda vienu metu. Sandėliavimas kainuoja ir bulvės genda, bet vėliau gali gauti daugiau.</p>`+sellPanel();
+ if(s===3)h+=`<h2>❄️ Žiemos apžvalga</h2><p class="mut">Sąskaitos apmokėtos. Metas investuoti, grąžinti skolas ar parduoti atsargas.</p>`+sellPanel()+(S.gamb?btn(`Gydymas nuo lošimo ${E(C(2500))}`,"rehab('gamb')",'alt'):'')+(S.drink?btn(`Gydymas nuo alkoholizmo ${E(C(2500))}`,"rehab('drink')",'alt'):'');
+ if(s<2)h+=sellPanel();return h}
+function view(){const nw=netWorth(),w=S.sea,r=rate();
+ let ev='';if(S.ev){const e=EV[S.ev.i];ev=`<div class="ev"><h3>${e.t}</h3><p>${e.d}</p>`;
+  if(S.ev.res!==null)ev+=`<p><b>${S.ev.res}</b></p>`+(S.over?'':btn('Tęsti','endEv()'));
+  else ev+=e.c.map(([l,f,k],i)=>{const cost=typeof k==='function'?k():k||0;return btn(typeof l==='function'?l():l,`chooseEv(${i})`,'alt',cost>S.cash)}).join('');ev+='</div>'}
+ const led=(o,c)=>Object.entries(o).map(([k,v])=>row(k,E(v),c)).join('')||'<tr><td class="mut">Kol kas nieko</td><td></td></tr>';
+ const hmax=Math.max(1,...S.hist.map(x=>x.p));
+ return`<header>${TITLE}<div class="pills">${SEAS.map((n,i)=>`<span class="pill ${i===w?'on':''}">${ICON[i]} ${n}</span>`).join('')}<span class="pill">${S.year}-ieji metai</span><span class="pill">${S.age} m.</span></div></header><div class="stripe"></div>
+ ${ev}
+ <div class="grid">
+ <div class="card"><h2>💰 Finansai</h2><table>${row('Pinigai',E(S.cash),S.cash<0?'neg':'')}${row('Skola',E(S.debt),S.debt?'neg':'')}${row('Palūkanų norma',r+' % ('+E(S.debt*r/100)+'/m.)')}${row('Žemė',S.land+' ha ('+E(S.land*landVal())+')')}${row('Technika ir pastatai',E(S.equipVal))}${row('Bulvės',T(S.inv)+' t ('+E(S.inv*S.price)+')')}${row('Šių metų pajamos',E(inc()),'pos')}${row('Šių metų išlaidos',E(exp()),'neg')}${row('Grynoji vertė',E(nw),nw<0?'neg':'pos')}</table>
+  <p class="note">Norma = bazinė ${S.policy} % (Euribor) + 3 % banko marža${S.debt>assets()*.6?' + 2 % rizikos priemoka (skola viršija 60 % turto)':''}.</p></div>
+ <div class="card"><h2>🚜 Ūkis</h2><table>${row('Pasėta',S.planted+' / '+S.land+' ha')}${row('Pajėgumas (be nuobaudos)',cap()+' ha')}${row('Traktoriai / kombainai',S.tractor+' / '+S.harv)}${row('Darbuotojai',S.workers)}${row('Sandėlis',STOR[S.stor].n+' (talpa '+capT()+' t, genda '+Math.round(STOR[S.stor].sp*100)+' % per sezoną)')}${row('Šeima',S.fam?'Yra šeima, vaikų: '+S.kids.length:'Be šeimos'+(S.kids.length?', vaikų: '+S.kids.length:''))}${row('Būklė',[S.gamb?'🎰 lošimas':'',S.drink?'🍺 alkoholis':'',S.back?'🦴 nugara':'',S.pol?'🗳️ tarybos narys':'',S.obs?'🥔 manija':'',S.car?'🏎️ automobilis':''].filter(Boolean).join(', ')||'Nieko ypatingo')}</table></div>
+ <div class="card"><h2>📊 Rinka</h2><table>${row('Kaina dabar',E(S.price)+'/t '+(S.price>S.prev*1.01?'▲':S.price<S.prev*.99?'▼':'▬'))}${row('Paklausa',S.demand>1.1?'Didelė':S.demand<.9?'Maža':'Normali')}${row('Konkurencija',S.comp?'agroholdingų: '+S.comp:'Nėra')}${row('Infliacijos indeksas',F2(S.infl))}</table>
+  <p class="mut">Rudens kainų istorija (€/t)</p><div class="bars">${S.hist.map(x=>`<i title="${x.y} m.: ${E(x.p)}" style="height:${x.p/hmax*100}%"></i>`).join('')}</div>
+  <p class="note">💡 Kaina = paklausa ÷ pasiūla, pakoreguota pagal sezoną. Rekordiniai derliai kainas mažina, trūkumas – kelia.</p></div>
+ <div class="card wide" ${S.ev&&S.ev.res===null?'style="opacity:.6"':''}>${actions()}</div>
+ <div class="card"><h2>🏦 Bankas ir investicijos</h2><p><input type="number" id="ln" min="1" placeholder="suma, €"> ${btn('Skolintis','borrow()')}${btn('Grąžinti','repay(false)','alt')}${btn('Grąžinti kiek galima','repay(true)','alt')}</p>
+  <p>${btn(`Traktorius ${E(C(PRICES.tractor))} (+10 ha, +6 % derliaus)`,"buy('tractor')")}${btn(`Kombainas ${E(C(PRICES.harv))} (+20 ha, +4 %)`,"buy('harv')")}</p>
+  <p>${S.stor<2?btn(`Gerinti sandėlį: ${STOR[S.stor+1].n} ${E(C(PRICES['stor'+(S.stor+1)]))}`,"buy('stor')"):'Geriausias sandėlis jau yra'}</p>
+  <p>${btn(`Samdyti darbuotoją (${E(C(PRICES.worker))}/m., +10 ha)`,"buy('worker')")}${S.workers?btn('Atleisti vieną','fire()','bad'):''}</p>
+  <p>Hektarai <input type="number" id="lq" min="1" value="1"> ${btn(`Pirkti (${E(landVal())}/ha)`,"buy('land')")}${btn('Parduoti (−15 %)','sellLand()','bad')}</p>
+  <p class="note">💡 Kiekvienos investicijos grąžą lygink su paskolos palūkanomis (alternatyvioji kaina). Žemė brangsta augant ūkiui, o darbuotojai atsiperka tik turint pakankamai žemės.</p></div>
+ <div class="card"><h2>🧾 Šių metų apyvarta</h2><table>${led(S.led.inc,'pos')}${led(S.led.exp,'neg')}${row('<b>Pinigų pelnas</b>',E(inc()-exp()),inc()-exp()<0?'neg':'pos')}</table></div>
+ <div class="card"><h2>🏆 Pasiekimai</h2>${milestones()}</div>
+ <div class="card wide"><h2>📖 Ūkio dienoraštis</h2><div class="log">${S.log.map(l=>`<div>${l}</div>`).join('')}</div></div></div>
+ <div style="margin:12px 0">${btn(`Toliau: ${w===3?(S.year+1)+'-ieji metai':SEAS[w+1].toLowerCase()} ▶`,'next()','',!!S.ev)}${btn('Išeiti į pensiją','retire()','ghost')}${btn('Naujas žaidimas','newG()','ghost')}${btn('Ištrinti išsaugojimą','reset()','bad')}</div>`}
+function endHTML(){const o=S.over,nw=o.nw;let t,d;
+ if(o.k==='bankrupt'){t='💀 Bankrotas';d='Bankas perima ūkį. Skolos per ilgai viršijo turtą. Grįžti į universitetą. Priima. Dėstytojai net nesistebi.'}
+ else if(o.k==='sold'){t='🕴️ Pardavei ūkį';d='Priėmei verslininko pasiūlymą. Ūkio vietoje netrukus išdygsta automobilių aikštelė.'}
+ else if(nw>=1e7){t='👑 Tarptautinė bulvių imperija';d='Tavo vardas puikuojasi ant maišų trijuose žemynuose. Algirdas vis dar tvirtina, kad jo bulvės geresnės.'}
+ else if(nw>=1e6){t='💎 Bulvių milijonierius';d='Iš universiteto metusio studento tapai milijonieriumi. Mama kreipiasi į tave „ponas“.'}
+ else if(nw>=250000){t='🌾 Sėkmingas ūkininkas verslininkas';d='Solidus, pagarbos vertas ūkis. Kaimynai pavydi, bet slapčia.'}
+ else if(nw>=20000){t='🏡 Nedidelis savarankiškas ūkininkas';d='Išgyvenai. Daugelis neišgyvena.'}
+ else{t='😬 Vos suduri galą su galu';d='Bulvės gerai. Tu – ne.'}
+ return`<header>${TITLE}</header><div class="stripe"></div><div class="card center"><h1>${t}</h1><p>${d}</p><h2>Galutinė ataskaita: ${S.age} m., ${S.year}-ieji metai</h2>
+ <table style="max-width:420px;margin:auto">${row('Grynoji vertė',E(nw),nw<0?'neg':'pos')}${row('Didžiausia grynoji vertė',E(S.peak))}${row('Bendros pajamos',E(S.tot))}${row('Žemė',S.land+' ha')}${row('Derlių skaičius',S.harvests)}${row('Didžiausias derlius',T(S.bestH)+' t')}${row('Supuvusios bulvės',T(S.lostTot)+' t')}${row('Likusi skola',E(S.debt))}</table>
+ <h2 style="margin-top:12px">Gyvenimo istorija</h2><div class="log" style="max-width:500px;margin:auto;text-align:left">${S.life.map(l=>`<div>${l}</div>`).join('')||'<div>Gyvenimas be įvykių.</div>'}</div>
+ <p>${milestones()}</p>${btn('Žaisti dar kartą','newG()')}${btn('Meniu','S=null;render()','ghost')}</div>`}
+function menu(){let has=false;try{has=!!localStorage.getItem(KEY)}catch(e){}
+ return`<header>${TITLE}</header><div class="stripe"></div><div class="card center"><div class="hero">🌾🚜🏡🥔🌾</div><p>Tau 20 metų, ką tik metei universitetą ir pasiėmei ${E(30000)} paskolą, kad taptum bulvių ūkininku Pakalniškių kaime. Mama susirūpinusi. Kaimynai spėlioja, kiek tai truks.</p>
+ <p class="note">Valdyk paskolas, orą, rinką ir abejotinus gyvenimo sprendimus iki 40 metų.</p>${btn('Naujas žaidimas','newG()')}${btn('Tęsti','cont()','alt',!has)}${btn('Ištrinti išsaugojimą','reset()','bad',!has)}</div>`}
+function render(){const a=$('#app');a.innerHTML=!S?menu():S.over?endHTML():view()}
+$('#my').onclick=()=>{$('#modal').style.display='none';const f=pend;pend=null;f&&f()};
+$('#mn').onclick=()=>{$('#modal').style.display='none';pend=null};
+render();
+</script></body></html>
