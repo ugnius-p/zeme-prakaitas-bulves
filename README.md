@@ -4,3 +4,4 @@
 
 ![QR code for the link](qr.png)
 # [Žaisti](https://ugnius-p.github.io/zeme-prakaitas-bulves)
+# [Pristatyti](https://ugnius-p.github.io/zeme-prakaitas-bulves/prezentacija.html)
