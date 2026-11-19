@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="lt"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ŽEMĖ, PRAKAITAS IR BULVĖS – prezentacija</title>
+<style>
+:root{--g:#1f3d2b;--g2:#3d7a37;--br:#6b4a2b;--cr:#f4edd8;--card:#fffaf0;--ln:#d9cba8;--tat:#c59a4e;--rust:#b0432b}
+*{box-sizing:border-box}
+html{font-size:clamp(14px,min(1.9vw,3.4vh),32px)}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--g);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--g);overflow-wrap:break-word}
+#deck{position:fixed;inset:0}
+.slide{position:absolute;inset:0;padding:4.5vh 6vw 11vh;background:var(--cr);display:flex;flex-direction:column;justify-content:center;gap:.8rem;overflow:auto;
+ opacity:0;visibility:hidden;transform:translateX(3vw);transition:opacity .55s,transform .55s,visibility 0s .55s}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .55s,transform .55s}
+.slide.dark{background:repeating-linear-gradient(0deg,#2c4a35 0 .7rem,#26422f .7rem 1.4rem);color:var(--cr)}
+.rise{opacity:0}.active .rise{animation:rise .7s var(--d,0s) both}
+@keyframes rise{from{opacity:0;transform:translateY(1.2rem)}to{opacity:1;transform:none}}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0;line-height:1.15}
+h2{font-size:2rem;color:var(--g)}h3{font-size:1.15rem;color:var(--br)}
+.k{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--br);font-weight:700}
+.dark .k,.dark h2{color:var(--tat)}
+p{margin:.2rem 0;line-height:1.4}.sm{font-size:.8rem;opacity:.8}
+.g2,.g3,.g4{display:grid;gap:.8rem}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:.7rem;padding:.7rem .9rem;min-width:0}
+.card b.n,.num{font-family:Georgia,serif;font-size:1.5rem;color:var(--g2);display:block;white-space:nowrap}
+.card.hl{background:var(--g);color:var(--cr);border-color:var(--g)}.card.hl h3,.card.hl .num{color:var(--tat)}
+.stripe{height:.4rem;width:8rem;background:linear-gradient(90deg,#fdb913 33.3%,#006a44 33.3% 66.6%,#c1272d 66.6%);border-radius:9px}
+.tag{display:inline-block;padding:.05rem .5rem;border-radius:99px;font-size:.7rem;font-weight:700;color:#fff;background:var(--g2)}.tag.p{background:var(--tat);color:#2a1d0c}.tag.t{background:var(--br)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}td,th{padding:.3rem .5rem;border-bottom:1px solid var(--ln);text-align:left}th{color:var(--br)}td:last-child,th:last-child{text-align:right}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:.4rem;align-items:stretch}.ar{align-self:center;font-size:1.5rem;color:var(--tat)}
+.bar{display:flex;align-items:center;gap:.5rem;margin:.15rem 0;font-size:.8rem}.bar span{width:5.2rem;flex:none}.bar i{display:block;height:.9rem;border-radius:3px;background:var(--g2);transition:width 1s .4s;width:0}.active .bar i{width:var(--w)}.bar i.pr{background:var(--tat)}.bar i.in{background:var(--rust)}
+.t1{font-size:3.2rem;letter-spacing:.04em;line-height:1.05;color:#fff;text-shadow:0 .2rem .8rem #0008}
+.play{display:inline-block;margin-top:.6rem;padding:1rem 2.2rem;background:var(--tat);color:#2a1d0c;font-weight:800;font-size:1.6rem;border-radius:1rem;text-decoration:none;box-shadow:0 .4rem 0 #8a6a2c;transition:transform .15s}.play:hover,.play:focus-visible{transform:translateY(-3px) scale(1.03);outline:3px solid #fff}
+#bar{position:fixed;left:0;top:0;height:.35rem;background:linear-gradient(90deg,#fdb913,#3d7a37);z-index:5;transition:width .5s}
+#ctl{position:fixed;left:50%;bottom:1.2vh;transform:translateX(-50%);display:flex;gap:.5rem;align-items:center;background:#1f3d2bdd;color:#f4edd8;padding:.3rem .6rem;border-radius:99px;z-index:5;font-size:.9rem}
+#ctl button{background:var(--tat);border:0;border-radius:99px;color:#2a1d0c;font:inherit;font-weight:700;padding:.25rem .8rem;cursor:pointer}#ctl button:disabled{opacity:.35}
+@media(max-width:800px){.g2,.g3,.g4{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.ar{transform:rotate(90deg);text-align:center}.t1{font-size:2rem}h2{font-size:1.5rem}.slide{justify-content:flex-start;padding-top:3vh}}
+@media(max-width:800px) and (min-width:500px){.g4{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){.rise{opacity:1!important;animation:none!important}.slide{transition:none}}
+</style></head><body>
+<div id="bar"></div>
+<main id="deck">
+
+<section class="slide dark">
+ <div class="rise" style="font-size:2.5rem">🌾🚜🏡🥔🌾</div>
+ <h1 class="t1 rise" style="--d:.15s">ŽEMĖ, PRAKAITAS<br>IR BULVĖS</h1>
+ <div class="stripe rise" style="--d:.3s"></div>
+ <p class="rise" style="--d:.4s;font-size:1.3rem">Ekonomikos simuliacija apie verslą, investicijas ir riziką.</p>
+ <p class="rise" style="--d:.55s;font-family:Georgia,serif;font-style:italic;color:var(--tat);font-size:1.2rem">„Nuo pirmos paskolos iki paskutinės bulvės.“</p>
+ <p class="sm rise" style="--d:.7s">Ekonomikos projektas · naudok ← → arba mygtukus apačioje</p>
+</section>
+
+<section class="slide">
+ <div class="k rise">01 · Žaidimo idėja</div>
+ <h2 class="rise" style="--d:.1s">Nuo universiteto metusio jaunuolio iki bulvių ūkininko</h2>
+ <p class="rise" style="--d:.2s">Tau 20 metų, studijų nebaigei ir tikiesi, kad <b>bulvės yra ateitis</b>. Pasiimi paskolą, nusiperki žemės ir pradedi ūkininkauti.</p>
+ <div class="g4">
+  <div class="card rise" style="--d:.3s"><h3>Paskola</h3><b class="n">30 000 €</b><span class="sm">palūkanos 6 %/m.</span></div>
+  <div class="card rise" style="--d:.4s"><h3>Pinigai</h3><b class="n">8 000 €</b><span class="sm">sėkloms ir trąšoms</span></div>
+  <div class="card rise" style="--d:.5s"><h3>Žemė</h3><b class="n">6 ha</b><span class="sm">vertė ≈ 25 800 €</span></div>
+  <div class="card rise" style="--d:.6s"><h3>Grynoji vertė</h3><b class="n">≈ 3 800 €</b><span class="sm">turtas − skola</span></div>
+ </div>
+ <div class="g2">
+  <div class="card hl rise" style="--d:.7s"><h3>Tikslas</h3><p>Grąžinti paskolą, didinti grynąją vertę ir plėsti ūkį, kol sulauksi 60 metų (apie 40 žaidimo metų).</p></div>
+  <div class="card rise" style="--d:.8s"><h3>Galimos pabaigos</h3><p>Bankrotas · ūkio pardavimas · išėjimas į pensiją: nuo „vos suduri galą su galu“ iki <b>10 mln. € bulvių imperijos</b>.</p></div>
+ </div>
+</section>
+
+<section class="slide">
+ <div class="k rise">02 · Žaidimo eiga</div>
+ <h2 class="rise" style="--d:.1s">Vieni ūkio metai = keturi sezonai</h2>
+ <div class="flow">
+  <div class="card rise" style="--d:.2s"><h3>🌱 Pavasaris</h3><p>Sėklos, trąšos, draudimas, sėja, investicijos.</p></div><div class="ar">➜</div>
+  <div class="card rise" style="--d:.35s"><h3>☀️ Vasara</h3><p>Oras ir kenkėjai: purškimas, laistymas, papildomos trąšos.</p></div><div class="ar">➜</div>
+  <div class="card rise" style="--d:.5s"><h3>🍂 Ruduo</h3><p>Derliaus nuėmimas, pardavimas arba sandėliavimas.</p></div><div class="ar">➜</div>
+  <div class="card rise" style="--d:.65s"><h3>❄️ Žiema</h3><p>Palūkanos, mokesčiai, nusidėvėjimas, infliacija, skolos.</p></div>
+ </div>
+ <div class="g3">
+  <div class="card hl rise" style="--d:.8s"><h3>Kiekvienas euras užfiksuojamas</h3><p>Apyvartos lentelėje matai, iš ko gavai pajamų ir kam išleidai.</p></div>
+  <div class="card rise" style="--d:.9s"><h3>40 atsitiktinių įvykių</h3><p>Sausros, vagystės, VMI patikra, skyrybos, loterija. Daugelis su pasirinkimu.</p></div>
+  <div class="card rise" style="--d:1s"><h3>Sprendimai turi kainą</h3><p>Kiekvienas pirkinys ir paskola keičia kitų metų rezultatą.</p></div>
+ </div>
+</section>
+
+<section class="slide">
+ <div class="k rise">03 · Pasiūla ir paklausa</div>
+ <h2 class="rise" style="--d:.1s">Gausus derlius pigina bulves, prastas brangina</h2>
+ <div class="g2">
+  <div>
+   <div class="card hl rise" style="--d:.2s"><h3>Žaidimo rinkos formulė</h3><p><b>Kaina ≈ bazinė kaina × paklausa ÷ pasiūla × sezono koeficientas</b></p><p class="sm">Pasiūlą nustato viso regiono oras: geras oras → daug bulvių → kaina krenta.</p></div>
+   <p class="rise" style="--d:.35s">🍂 <b>Ruduo – pigiausias metas</b> (×0,85): visi parduoda vienu metu. Pavasarį ir vasarą kaina didesnė (×1,05 ir ×1,10), bet saugojimas kainuoja ir bulvės genda.</p>
+   <p class="rise" style="--d:.45s">📉 Parduodamas daug tonų per sezoną, pats nuspaudi kainą (iki −40 %), o kainas dar stumia įvykiai: pertekliai, kainų lubos, ažiotažas.</p>
+  </div>
+  <div class="card rise" style="--d:.4s"><h3>Pavyzdys (vidutinis oras = 1,00)</h3>
+   <p class="sm" style="margin-bottom:.3rem"><b>Pajamos = derlius × kaina</b></p>
+   <p><b>Sausra</b> (oras ×0,6)</p><div class="bar"><span>derlius</span><i style="--w:46%"></i>0,60</div><div class="bar"><span>kaina</span><i class="pr" style="--w:96%"></i>1,25</div><div class="bar"><span>pajamos</span><i class="in" style="--w:58%"></i>0,75</div>
+   <p><b>Puikus oras</b> (×1,3)</p><div class="bar"><span>derlius</span><i style="--w:100%"></i>1,30</div><div class="bar"><span>kaina</span><i class="pr" style="--w:67%"></i>0,87</div><div class="bar"><span>pajamos</span><i class="in" style="--w:87%"></i>1,13</div>
+   <p class="sm">Kainos kilimas tik iš dalies kompensuoja prastą derlių: tai <b>ūkininko paradoksas</b>.</p></div>
+ </div>
+</section>
+
+<section class="slide">
+ <div class="k rise">04 · Pajamos, išlaidos ir pelnas</div>
+ <h2 class="rise" style="--d:.1s">Iš ko susideda ūkio pelnas?</h2>
+ <div class="g2">
+  <div class="card rise" style="--d:.2s"><h3>Iliustracinis pavyzdys: 6 ha, vidutinis oras</h3>
+   <table><tr><td>Derlius ≈ 15 t/ha × 6 ha</td><td>≈ 90 t</td></tr>
+   <tr><td>Kaina rudenį: 180 € × 0,85</td><td>≈ 153 €/t</td></tr>
+   <tr><td><b>Pajamos</b></td><td><b>≈ 13 770 €</b></td></tr>
+   <tr><td>Kintamos: sėklos, trąšos, kuras, pesticidai (570 €/ha)</td><td>− 3 420 €</td></tr>
+   <tr><td>Fiksuotos: palūkanos, žemės mokestis, pragyvenimas</td><td>− 5 080 €</td></tr>
+   <tr><td><b>Pinigų pelnas</b></td><td><b class="pos">≈ 5 270 €</b></td></tr>
+   <tr><td>Pelningumas (pelnas ÷ pajamos)</td><td>≈ 38 %</td></tr></table></div>
+  <div>
+   <div class="card rise" style="--d:.35s"><h3>Kintamos išlaidos</h3><p>Kinta su sėjos plotu: sėklos, trąšos, kuras, pesticidai, laistymas.</p></div>
+   <div class="card rise" style="--d:.45s;margin-top:.6rem"><h3>Fiksuotos išlaidos</h3><p>Mokamos nepriklausomai nuo derliaus: palūkanos, žemės mokestis, atlyginimai, pragyvenimas, technikos priežiūra.</p></div>
+   <div class="card hl rise" style="--d:.55s;margin-top:.6rem"><h3>Grynoji vertė</h3><p>Pinigai + bulvių atsargos + žemė + technika − skola. Pagal ją vertinama visa partija.</p></div>
+  </div>
+ </div>
+ <p class="sm rise" style="--d:.7s">Pastaba: žaidimas rodo pinigų pelną (pajamos − išlaidos), o nusidėvėjimą skaičiuoja atskirai. Bendrojo ir grynojo pelno skirstymo jame nėra.</p>
+</section>
+
+<section class="slide">
+ <div class="k rise">05 · Paskolos ir palūkanos</div>
+ <h2 class="rise" style="--d:.1s">Skola gali užauginti ūkį, o gali jį palaidoti</h2>
+ <div class="g3">
+  <div class="card rise" style="--d:.2s"><h3>Skolinimosi kaina</h3><b class="num">6 %</b><p>= Euribor 3 % + banko marža 3 %. Pradinė skola kainuoja <b>1 800 € per metus</b>. Norma kintama: Euribor keičiasi kasmet.</p></div>
+  <div class="card rise" style="--d:.35s"><h3>Rizikos priemoka</h3><b class="num">+ 2 %</b><p>Kai skola viršija 60 % turto, bankas brangina paskolą. Naujos paskolos limitas: 65 % turto − esama skola.</p></div>
+  <div class="card rise" style="--d:.5s"><h3>Sudėtinės palūkanos</h3><b class="num">+ 3 % mokestis</b><p>Jei žiemą pritrūksta pinigų, skylė paverčiama skuba paskola ir kitais metais auga palūkanos nuo palūkanų.</p></div>
+ </div>
+ <div class="g2">
+  <div class="card rise" style="--d:.65s"><h3>Teorinė sąsaja</h3><p>30 000 € už 6 % su kaupiamomis palūkanomis per 5 metus: 30 000 × 1,06⁵ ≈ <b>40 150 €</b>.</p></div>
+  <div class="card hl rise" style="--d:.8s"><h3>Kada paskola naudinga?</h3><p>Kai investicijos grąža didesnė nei palūkanos: pvz., traktorius leidžia apdirbti daugiau žemės. <b>Bankrotas:</b> grynoji vertė &lt; 0 dvi žiemas iš eilės.</p></div>
+ </div>
+</section>
+
+<section class="slide">
+ <div class="k rise">06 · Investicijos ir kapitalas</div>
+ <h2 class="rise" style="--d:.1s">Kapitalas didina pajėgumą, bet kainuoja</h2>
+ <div class="g2">
+  <div class="card rise" style="--d:.2s"><table><tr><th>Investicija</th><th>Kaina</th><th>Efektas</th></tr>
+   <tr><td>🚜 Traktorius</td><td>18 000 €</td><td>+10 ha, +6 % derliaus</td></tr>
+   <tr><td>🌾 Kombainas</td><td>45 000 €</td><td>+20 ha, +4 %</td></tr>
+   <tr><td>🏠 Šiltinta klėtis</td><td>15 000 €</td><td>puvimas 9 % → 4 %</td></tr>
+   <tr><td>❄️ Šaldomasis sandėlis</td><td>50 000 €</td><td>puvimas → 1,5 %</td></tr>
+   <tr><td>👷 Darbuotojas</td><td>7 000 €/m.</td><td>+10 ha</td></tr></table>
+   <p class="sm">Be traktoriaus nubaudžiama ūkininkaujant daugiau nei 8 ha. Technika kasmet <b>nusidėvi 12 %</b> (traktorius po metų vertas ≈ 15 840 €).</p></div>
+  <div>
+   <div class="card hl rise" style="--d:.35s"><h3>Pavyzdys: traktorius</h3><p>Ūkis plečiasi nuo 8 iki 14 ha. Papildomi 6 ha duoda ≈ 6 × 1 800 € = 10 800 € per metus, atėmus 1 500 € priežiūros: ≈ <b>9 300 €</b>.</p><p><b>ROI = grąža ÷ investicija ≈ 9 300 ÷ 18 000 ≈ 52 %/m.</b>, atsiperka per ~2 metus (be žemės kainos).</p></div>
+   <div class="card rise" style="--d:.5s;margin-top:.6rem"><h3>Masto ekonomija ir ribos</h3><p>Didesnis ūkis padengia fiksuotas išlaidas, o nuo 40 ha atsiranda eksporto sutartis (+20 %). Bet žemė brangsta kartu su plotu, o masiniai pardavimai spaudžia kainą.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="slide">
+ <div class="k rise">07 · Rizika ir neapibrėžtumas</div>
+ <h2 class="rise" style="--d:.1s">Ūkininkavimas = verslas su loterijos elementais</h2>
+ <div class="g3">
+  <div class="card rise" style="--d:.2s"><h3>🌵 Gamta</h3><p>Sausra (−25 % derliaus), maras, kruša, kenkėjai, atsitiktinis oras.</p></div>
+  <div class="card rise" style="--d:.3s"><h3>📈 Rinka</h3><p>Kainų šuoliai, pasaulinis perteklius, kainų lubos, nauji konkurentai.</p></div>
+  <div class="card rise" style="--d:.4s"><h3>💸 Netikėtos išlaidos</h3><p>Sugedęs traktorius, vagystės, baudos, pradingusios investicijos.</p></div>
+ </div>
+ <div class="g2">
+  <div class="card rise" style="--d:.5s"><h3>👨‍👩‍👧 Asmeninis gyvenimas</h3><p>Vestuvės, vaikai, skyrybos, lošimai, alkoholis. Jie kasmet kainuoja ir mažina derlių.</p></div>
+  <div class="card hl rise" style="--d:.6s"><h3>Rizikos valdymas žaidime</h3><p>Pasėlių draudimas (35 €/ha) <b>sumažina nelaimių žalą 60 %</b>; pesticidai kenkėjų žalą 80 %; laistymas padeda sausros metu. Pavasarį žaidimas primena <b>žiemos sąskaitų sumą</b>: finansinis rezervas apsaugo nuo bankroto.</p></div>
+ </div>
+</section>
+
+<section class="slide">
+ <div class="k rise">08 · Kiti principai ir išvados</div>
+ <h2 class="rise" style="--d:.1s">Daugiau ekonomikos, nei atrodo</h2>
+ <div class="g4">
+  <div class="card rise" style="--d:.2s"><h3>Infliacija</h3><span class="tag">žaidime</span><p>2–5 % per metus brangina sąnaudas, žemę ir kainas.</p></div>
+  <div class="card rise" style="--d:.28s"><h3>Konkurencija</h3><span class="tag">žaidime</span><p>Agroholdingas visam laikui numuša kainą 3 %.</p></div>
+  <div class="card rise" style="--d:.36s"><h3>Valstybės politika</h3><span class="tag">žaidime</span><p>Išmokos iki 150 €/ha (maks. 9 000 €), kainų lubos −20 %.</p></div>
+  <div class="card rise" style="--d:.44s"><h3>Bankrotas</h3><span class="tag">žaidime</span><p>Neigiama grynoji vertė dvi žiemas ar &lt; −40 000 €.</p></div>
+  <div class="card rise" style="--d:.52s"><h3>Verslo plėtra</h3><span class="tag">žaidime</span><p>Nuo 6 iki 60+ ha, eksportas, 10 mln. € tikslas.</p></div>
+  <div class="card rise" style="--d:.6s"><h3>Alternatyvieji kaštai</h3><span class="tag p">iš dalies</span><p>Eurą gali skirti skolai ar investicijai; žaidimas tik užsimena.</p></div>
+  <div class="card rise" style="--d:.68s"><h3>Sudėtinės palūkanos</h3><span class="tag p">iš dalies</span><p>Veikia, kai overdraftas virsta skola.</p></div>
+  <div class="card rise" style="--d:.76s"><h3>ROI</h3><span class="tag t">teorinė sąsaja</span><p>Žaidimas jo neskaičiuoja, bet jį galima apskaičiuoti.</p></div>
+ </div>
+ <div class="card hl rise" style="--d:.9s"><p><b>Pagrindinė mintis:</b> net paprastas bulvių ūkis reikalauja ekonominių sprendimų. Sėkmę lemia ne vien derliaus kiekis, bet ir <b>investicijų planavimas, rinkos supratimas, finansų valdymas ir rizikos valdymas</b>.</p></div>
+</section>
+
+<section class="slide dark" style="text-align:center;align-items:center">
+ <div class="rise" style="font-size:3rem">🥔🚜🏡</div>
+ <h2 class="rise" style="--d:.15s;font-size:2.2rem;max-width:30ch">„O dabar pažiūrėkime, ar pavyks iš paprasto bulvių ūkio sukurti tikrą bulvių imperiją.“</h2>
+ <a class="play rise" style="--d:.35s" href="./index.html" id="play">ŽAISTI ŽAIDIMĄ 🥔</a>
+ <p class="sm rise" style="--d:.5s">Žaidimas atsidarys šiame lange (./index.html)</p>
+</section>
+
+</main>
+<div id="ctl"><button id="pv" aria-label="Atgal">◀</button><span id="ct">1 / 10</span><button id="nx" aria-label="Pirmyn">▶</button><button id="fs" aria-label="Pilnas ekranas" title="Pilnas ekranas (F)">⛶</button></div>
+<script>
+'use strict';
+const slides=[...document.querySelectorAll('.slide')],N=slides.length,bar=document.getElementById('bar'),ct=document.getElementById('ct'),pv=document.getElementById('pv'),nx=document.getElementById('nx');
+let i=0;
+function show(n){i=Math.max(0,Math.min(N-1,n));
+ slides.forEach((s,k)=>{s.classList.toggle('active',k===i);s.setAttribute('aria-hidden',k!==i)});
+ ct.textContent=`${i+1} / ${N}`;bar.style.width=((i+1)/N*100)+'%';pv.disabled=i===0;nx.disabled=i===N-1;slides[i].scrollTop=0;
+ try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+function fs(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
+pv.onclick=()=>show(i-1);nx.onclick=()=>show(i+1);document.getElementById('fs').onclick=fs;
+document.addEventListener('keydown',e=>{
+ if(e.ctrlKey||e.metaKey||e.altKey)return;
+ if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}
+ else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+ else if(e.key==='Home')show(0);else if(e.key==='End')show(N-1);
+ else if(e.key==='f'||e.key==='F')fs()});
+let x0=null;
+document.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>60)show(i+(dx<0?1:-1))},{passive:true});
+show(parseInt(location.hash.slice(1))-1||0);
+</script></body></html>
